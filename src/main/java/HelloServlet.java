@@ -1,5 +1,3 @@
-package esigelec.jee.bornes_electriques;
-
 import java.io.*;
 
 import jakarta.servlet.http.*;
