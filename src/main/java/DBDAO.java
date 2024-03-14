@@ -1,3 +1,6 @@
+import io.github.cdimascio.dotenv.Dotenv;
+
+import java.nio.file.Paths;
 import java.sql.*;
 
 public class DBDAO {
@@ -15,10 +18,14 @@ public class DBDAO {
         }
     }
     private void dbConnect() throws SQLException {
-        String url = "jdbc:mysql://" + BASE_URL + ":3306/bornes_electriques";
-        String username = "administrator";
-        String password = "root";
+        Dotenv dotenv = Dotenv.load();
+        String dbUrl = dotenv.get("DB_URL");
+        String dbPort = dotenv.get("DB_PORT");
+        String dbName = dotenv.get("DB_NAME");
+        String dbUser = dotenv.get("DB_USER");
+        String dbPassword = dotenv.get("DB_PASSWORD");
+        String url = "jdbc:mysql://" + dbUrl + ":" + dbPort + "/" + dbName;
 
-        connection = DriverManager.getConnection(url, username, password);
+        connection = DriverManager.getConnection(url, dbUser, dbPassword);
     }
 }
