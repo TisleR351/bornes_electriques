@@ -12,6 +12,7 @@ public class HelloServlet extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        DBDAO dao = new DBDAO();
         response.setContentType("text/html");
 
         // Hello
