@@ -9,5 +9,6 @@
 </h1>
 <br/>
 <a href="hello-servlet">integration-du-menu</a>
+<a href="./map.jsp">Voir la carte</a>
 </body>
 </html>
