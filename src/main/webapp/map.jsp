@@ -1,47 +1,23 @@
-<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
-<%@ page import="java.util.Objects" %>
 <%@ page import="dao.DBDAO" %>
-<%@ page import="jakarta.servlet.http.Cookie" %>
 <%@ page import="classes.Borne" %>
+<%@ page import="java.sql.SQLException" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    Borne borne = new Borne(
-            "Opérateur", // nom_operateur
-            "Contact Opérateur", // contact_operateur
-            "Téléphone Opérateur", // telephone_operateur
-            "Nom de la station", // nom_station
-            "Adresse de la station", // adresse_station
-            "Code INSEE commune", // code_insee_commune
-            "[2.352222, 48.856614]", // coordonneesXY
-            7.2, // puissance_nominale
-            true, // prise_type_ef
-            false, // prise_type_2
-            true, // prise_type_combo_ccs
-            false, // prise_type_chademo
-            false, // prise_type_autre
-            false, // gratuit
-            true, // paiement_acte
-            true, // paiement_cb
-            false, // paiement_autre
-            "Tarification", // tarification
-            "Condition d'accès", // condition_acces
-            true, // reservation
-            "Horaires", // horaires
-            "Accessibilité PMR", // accessibilite_pmr
-            "Restriction gabarit", // restriction_gabarit
-            false, // station_deux_roues
-            "Raccordement", // raccordement
-            java.sql.Date.valueOf("2023-01-01"), // date_mise_en_service
-            "Observations", // observations
-            java.sql.Date.valueOf("2023-01-01"), // date_maj
-            2.352222, // consolidated_longitude
-            48.856614, // consolidated_latitude
-            "Nom de la commune" // consolidated_commune
-    );
-        DBDAO dbdao = new DBDAO();
-        List<Borne> terminals = dbdao.getCloseElectricTerminals(borne);
-        %>
+    double latitude = 0;
+    double longitude = 0;
+    if(request.getParameter("latitude") != null && request.getParameter("longitude") != null) {
+        latitude = Double.parseDouble(request.getParameter("latitude"));
+        longitude = Double.parseDouble(request.getParameter("longitude"));
+    }
+    DBDAO dbdao = new DBDAO();
+    List<Borne> terminals = null;
+    try {
+        terminals = dbdao.getCloseElectricTerminals(latitude, longitude);
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,19 +41,39 @@
 <body>
 <div id="map"></div>
 <script>
-    var map = L.map('map').setView([48.724 , -0.56], 10);
+    function getPositionsInQueryParams(position) {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+
+        var url = "./map.jsp?latitude=" + encodeURIComponent(latitude) + "&longitude=" + encodeURIComponent(longitude);
+        <% if(request.getParameter("latitude") == null && request.getParameter("longitude") == null) { %>
+            window.location.href = url;
+        <%
+        }
+        %>
+    }
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(getPositionsInQueryParams);
+        } else {
+            alert("La géolocalisation n'est pas prise en charge par ce navigateur.");
+        }
+    }
+
+    getLocation();
+</script>
+
+<script>
+    var map = L.map('map').setView([<%= latitude %> , <%= longitude %>], 10);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
-    <%
-    for(Borne terminal : terminals) {
-        %>
-    L.marker([<%= terminal.getConsolidated_latitude()%> , <%= terminal.getConsolidated_longitude()%>]).addTo(map)
-        <%
-    }
-    %>
-        .bindPopup('Point 1');
+
+    <% for(Borne terminal : terminals) { %>
+    L.marker([<%= terminal.getConsolidated_latitude() %> , <%= terminal.getConsolidated_longitude() %>]).addTo(map).bindPopup('Point 1');
+    <% } %>
 </script>
 </body>
 </html>

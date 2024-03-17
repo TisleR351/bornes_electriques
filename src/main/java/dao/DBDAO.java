@@ -13,13 +13,21 @@ public class DBDAO {
     public DBDAO() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            dbConnect();
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Cannot find the driver in the classpath!", e);
+        }
+    }
+
+    private void dbClose() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     private void dbConnect() throws SQLException {
         Dotenv dotenv = Dotenv.load();
         String dbUrl = dotenv.get("DB_URL");
@@ -31,23 +39,22 @@ public class DBDAO {
 
         connection = DriverManager.getConnection(url, dbUser, dbPassword);
     }
-    public List<Borne> getCloseElectricTerminals(Borne terminal) {
+    public List<Borne> getCloseElectricTerminals(double userLatitude, double userLongitude) throws SQLException {
+        dbConnect();
         Dotenv dotenv = Dotenv.load();
         List<Borne> bornes = new ArrayList<>();
-        bornes.add(terminal);
         String tableName = dotenv.get("TABLE_NAME");
-        double latitude = terminal.getConsolidated_latitude();
-        double longitude = terminal.getConsolidated_longitude();
-        try (PreparedStatement pstmt = connection.prepareStatement(
+        try (
+                PreparedStatement pstmt = connection.prepareStatement(
                 "SELECT *, " +
                         "6371 * 2 * ASIN(SQRT(POWER(SIN((? - ABS(consolidated_latitude)) * PI()/180 / 2), 2) + " +
                         "COS(? * PI()/180 ) * COS(ABS(consolidated_latitude) * PI()/180) * " +
                         "POWER(SIN((? - consolidated_longitude) * PI()/180 / 2), 2) )) AS distance " +
                         "FROM " + tableName + " " +
-                        "ORDER BY distance LIMIT 5")) {
-            pstmt.setDouble(1, latitude);
-            pstmt.setDouble(2, latitude);
-            pstmt.setDouble(3, longitude);
+                        "ORDER BY distance LIMIT 15")) {
+            pstmt.setDouble(1, userLatitude);
+            pstmt.setDouble(2, userLatitude);
+            pstmt.setDouble(3, userLongitude);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -89,6 +96,8 @@ public class DBDAO {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            dbClose();
         }
         return bornes;
     }
