@@ -18,34 +18,13 @@
         throw new RuntimeException(e);
     }
 %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenStreetMap avec Leaflet</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        #map {
-            height: 100%;
-            width: 100%;
-        }
-    </style>
-</head>
-<body>
 <div id="map"></div>
 <script>
     function getPositionsInQueryParams(position) {
         var latitude = position.coords.latitude;
         var longitude = position.coords.longitude;
 
-        var url = "./map.jsp?latitude=" + encodeURIComponent(latitude) + "&longitude=" + encodeURIComponent(longitude);
+        var url = "?latitude=" + encodeURIComponent(latitude) + "&longitude=" + encodeURIComponent(longitude);
         <% if(request.getParameter("latitude") == null && request.getParameter("longitude") == null) { %>
             window.location.href = url;
         <%
@@ -75,5 +54,3 @@
     L.marker([<%= terminal.getConsolidated_latitude() %> , <%= terminal.getConsolidated_longitude() %>]).addTo(map).bindPopup('Point 1');
     <% } %>
 </script>
-</body>
-</html>
