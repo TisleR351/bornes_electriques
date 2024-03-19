@@ -39,7 +39,7 @@ public class DBDAO {
 
         connection = DriverManager.getConnection(url, dbUser, dbPassword);
     }
-    public List<Borne> getCloseElectricTerminals(double userLatitude, double userLongitude) throws SQLException {
+    public List<Borne> getCloseElectricTerminals(double userLatitude, double userLongitude, boolean type2, boolean typeEF, boolean typeChademo, boolean comnoCss, boolean typeAutre, boolean accessiblitePMR, boolean gratuit, boolean reservable, boolean CB, boolean acte, boolean autre) throws SQLException {
         dbConnect();
         Dotenv dotenv = Dotenv.load();
         List<Borne> bornes = new ArrayList<>();
