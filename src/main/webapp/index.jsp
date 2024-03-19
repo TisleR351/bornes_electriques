@@ -27,18 +27,19 @@
     <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Filtres</h5>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 </div>
+
 <div class="offcanvas-body">
     <div class="d-flex justify-content-between">
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckLeft" onchange="saveCheckboxState(this)">
-            <label class="form-check-label" for="flexCheckLeft">
+            <input class="form-check-input" type="checkbox" value="" id="type2" onchange="saveCheckboxState(this)">
+            <label class="form-check-label" for="type2">
                 Type 2
             </label>
         </div>
 
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckRight" onchange="saveCheckboxState(this)">
-            <label class="form-check-label" for="flexCheckRight">
+            <input class="form-check-input" type="checkbox" value="" id="typeEF" onchange="saveCheckboxState(this)">
+            <label class="form-check-label" for="typeEF">
                 Type EF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
         </div>
@@ -48,15 +49,15 @@
 
     <div class="d-flex justify-content-between">
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckLeft_2_ligne" onchange="saveCheckboxState(this)">
-            <label class="form-check-label" for="flexCheckLeft">
+            <input class="form-check-input" type="checkbox" value="" id="typeChademo" onchange="saveCheckboxState(this)">
+            <label class="form-check-label" for="typeChademo">
                 Type chademo
             </label>
         </div>
 
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckRight_2_ligne" onchange="saveCheckboxState(this)">
-            <label class="form-check-label" for="flexCheckRight">
+            <input class="form-check-input" type="checkbox" value="" id="comnoCss" onchange="saveCheckboxState(this)">
+            <label class="form-check-label" for="comnoCss">
                 comno_css&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
         </div>
@@ -65,15 +66,15 @@
 
     <div class="d-flex justify-content-between">
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckLeft_3_ligne" onchange="saveCheckboxState(this)">
-            <label class="form-check-label" for="flexCheckLeft">
+            <input class="form-check-input" type="checkbox" value="" id="typeAutre" onchange="saveCheckboxState(this)">
+            <label class="form-check-label" for="typeAutre">
                 Type autre
             </label>
         </div>
 
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckRight_3_ligne" onchange="saveCheckboxState(this)">
-            <label class="form-check-label" for="flexCheckRight">
+            <input class="form-check-input" type="checkbox" value="" id="accessiblilitePmr" onchange="saveCheckboxState(this)">
+            <label class="form-check-label" for="accessiblilitePmr">
                 Accessiblilite PMR
             </label>
         </div>
@@ -83,15 +84,15 @@
 
     <div class="d-flex justify-content-between">
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckLeft_4_ligne" onchange="saveCheckboxState(this)">
-            <label class="form-check-label" for="flexCheckLeft">
+            <input class="form-check-input" type="checkbox" value="" id="gratuit" onchange="saveCheckboxState(this)">
+            <label class="form-check-label" for="gratuit">
                 Gratuit
             </label>
         </div>
 
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckRight_4_ligne" onchange="saveCheckboxState(this)">
-            <label class="form-check-label" for="flexCheckRight">
+            <input class="form-check-input" type="checkbox" value="" id="reservable" onchange="saveCheckboxState(this)">
+            <label class="form-check-label" for="reservable">
                 Reservable&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
         </div>
@@ -103,16 +104,16 @@
     <span style="display: inline-block; width: 500px;"></span>
     <span style="display: inline-block; width: 70px;"></span>
     <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" onchange="saveCheckboxState(this)">
-        <label class="form-check-label" for="inlineCheckbox1">CB</label>
+        <input class="form-check-input" type="checkbox" id="CB" value="option1" onchange="saveCheckboxState(this)">
+        <label class="form-check-label" for="CB">CB</label>
     </div>
     <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2" onchange="saveCheckboxState(this)">
-        <label class="form-check-label" for="inlineCheckbox2">Acte</label>
+        <input class="form-check-input" type="checkbox" id="acte" value="option2" onchange="saveCheckboxState(this)">
+        <label class="form-check-label" for="acte">Acte</label>
     </div>
     <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3" onchange="saveCheckboxState(this)">
-        <label class="form-check-label" for="inlineCheckbox3">Autre</label>
+        <input class="form-check-input" type="checkbox" id="autre" value="option3" onchange="saveCheckboxState(this)">
+        <label class="form-check-label" for="autre">Autre</label>
     </div>
 
     <div class="d-grid gap-2">
@@ -153,6 +154,43 @@
             checkbox.checked = cookieValue === "true";
         });
     }
+
+    function saveFiltersInCookie() {
+        var type2 = document.getElementById('type2').checked ? '1' : '0';
+        var typeEF = document.getElementById('typeEF').checked ? '1' : '0';
+        var typeChademo = document.getElementById('typeChademo').checked ? '1' : '0';
+        var comnoCss = document.getElementById('comnoCss').checked ? '1' : '0';
+        var typeAutre = document.getElementById('typeAutre').checked ? '1' : '0';
+        var accessiblitePMR = document.getElementById('accessiblilitePmr').checked ? '1' : '0';
+        var gratuit = document.getElementById('gratuit').checked ? '1' : '0';
+        var reservable = document.getElementById('reservable').checked ? '1' : '0';
+        var CB = document.getElementById('CB').checked ? '1' : '0';
+        var acte = document.getElementById('acte').checked ? '1' : '0';
+        var autre = document.getElementById('autre').checked ? '1' : '0';
+
+        var cookieValue = type2 + ';' + typeEF + ';' + typeChademo + ';' +comnoCss+ ';' + typeAutre + ';' +accessiblitePMR + ';' +gratuit + ';' + reservable + ';' + CB + ';' + acte + ';' + autre;
+            setCookie('filters', cookieValue, 7); // 假设已有的设置cookie的函数
+    }
+
+    function loadFiltersFromCookie() {
+        var filtersCookie = getCookie('filters'); // 假设已有的读取cookie的函数
+        if (filtersCookie) {
+            var values = filtersCookie.split(';'); // 使用同样的分隔符进行分割
+            document.getElementById('type2').checked = values[0] === '1';
+            document.getElementById('typeEF').checked = values[1] === '1';
+            document.getElementById('typeChademo').checked = values[2] === '1';
+            document.getElementById('comnoCss').checked = values[3] === '1';
+            document.getElementById('typeAutre').checked = values[4] === '1';
+            document.getElementById('accessiblitePMR').checked = values[5] === '1';
+            document.getElementById('gratuit').checked = values[6] === '1';
+            document.getElementById('reservable').checked = values[7] === '1';
+            document.getElementById('CB').checked = values[8] === '1';
+            document.getElementById('acte').checked = values[9] === '1';
+            document.getElementById('autre').checked = values[10] === '1';
+        }
+    }
+
+
 </script>
 <jsp:include page="map.jsp"/>
 </body>

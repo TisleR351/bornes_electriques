@@ -56,6 +56,7 @@ public class DBDAO {
             pstmt.setDouble(2, userLatitude);
             pstmt.setDouble(3, userLongitude);
 
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     Borne borne = new Borne(
