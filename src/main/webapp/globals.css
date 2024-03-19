@@ -1,0 +1,26 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+#map {
+    z-index: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.hide-filters {
+    z-index: 999;
+    position: fixed;
+    top: 10px;
+    left: 80px;
+}
+
+.leaflet-popup-content-wrapper {
+    width: 50em;
+    padding: 10px;
+}
+
+.leaflet-popup-content-wrapper .leaflet-popup-content {
+    width: 100% !important;
+}

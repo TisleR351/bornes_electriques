@@ -8,27 +8,17 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        #map {
-            height: 100%;
-            width: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="globals.css" />
 </head>
 <body onload="loadCheckboxState()">
-<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">
+<button class="btn btn-primary hide-filters" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">
     Filtres
 </button>
 <div class="offcanvas offcanvas-start" data-bs-backdrop="static" tabindex="-1" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
     <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="D:\IdeaProjects\bornes_electriques\src\main\webapp\img.png" width="50" height="45" class="d-inline-block align-text-top">
+                <img src="./img.png" width="70" height="70" alt="logo" class="d-inline-block align-text-top">
                 MF
             </a>
         </div>
