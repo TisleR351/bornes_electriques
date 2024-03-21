@@ -18,7 +18,7 @@
     boolean acte = false;
     boolean autre = false;
 
-    if(request.getParameter("latitude") != null && request.getParameter("longitude") != null && request.getParameter("type2") != null && request.getParameter("typeEF") != null && request.getParameter("typeChademo") != null && request.getParameter("comnoCss") != null && request.getParameter("typeAutre") != null && request.getParameter("accessiblitePMR") != null && request.getParameter("gratuit") != null && request.getParameter("reservable") != null && request.getParameter("CB") != null && request.getParameter("acte") != null && request.getParameter("autre") != null) {
+    if(request.getParameter("latitude") != null && request.getParameter("longitude") != null) {
         latitude = Double.parseDouble(request.getParameter("latitude"));
         longitude = Double.parseDouble(request.getParameter("longitude"));
         /*type2 = Boolean.parseBoolean(request.getParameter("type2"));
@@ -75,31 +75,31 @@
 
     <% for(Borne terminal : terminals) { %>
     L.marker([<%= terminal.getConsolidated_latitude() %> , <%= terminal.getConsolidated_longitude() %>]).addTo(map)
-        .bindPopup('point'
-            <%--'<div class="container-fluid">' +--%>
-            <%--'<div class="row">' +--%>
-            <%--'<div class="col-md-6">' +--%>
-            <%--'<p><strong>Nom station:</strong> <%= terminal.getNom_station() %> </p>' +--%>
-            <%--'<p><strong>Nom opérateur:</strong> <%= terminal.getNom_operateur() %> </p>' +--%>
-            <%--'<p><strong>Contact opérateur:</strong> <%= terminal.getContact_operateur() %> </p>' +--%>
-            <%--'<p><strong>Téléphone opérateur:</strong> <%= terminal.getTelephone_operateur() %> </p>' +--%>
-            <%--'<p><strong>Adresse station:</strong> <%= (terminal.getAdresse_station().length() > 49) ? "Adresse trop longue" : terminal.getAdresse_station() %>> </p>' +--%>
-            <%--'<p><strong>Code INSEE Commune:</strong> <%= terminal.getCode_insee_commune() %> </p>' +--%>
-            <%--'<p><strong>Puissance nominale:</strong> <%= terminal.getpuissance_nominale() %> </p>' +--%>
-            <%--'<p><strong>Conditions d\'accès:</strong> <%= terminal.getCondition_acces() %> </p>' +--%>
-            <%--'</div>' +--%>
-            <%--'<div class="col-md-6">' +--%>
-            <%--'<p><strong>Tarification:</strong> <%= terminal.getTarification() %> </p>' +--%>
-            <%--'<p><strong>Horaires:</strong> <%= terminal.getHoraires() %> </p>' +--%>
-            <%--'<p><strong>Accessibilité PMR:</strong> <%= terminal.getAccessibilité_pmr() %> </p>' +--%>
-            <%--'<p><strong>Raccordement:</strong> <%= terminal.getraccordement() %> </p>' +--%>
-            <%--'<p><strong>Restriction gabarit:</strong> <%= terminal.getRestriction_gabarit() %> </p>' +--%>
-            <%--'<p><strong>Station deux roues:</strong> <%= terminal.isStation_deux_roues() %> </p>' +--%>
-            <%--'<p><strong>Date de mise en service:</strong> <%= terminal.getDate_mise_en_service() %> </p>' +--%>
-            <%--'<p><strong>Observations:</strong> <%= (terminal.getObservations().length() > 27) ? "Observations trop longues" : terminal.getObservations() %> </p>' +--%>
-            <%--'</div>' +--%>
-            <%--'</div>' +--%>
-            <%--'</div>'--%>
+        .bindPopup(
+            '<div class="container-fluid">' +
+            '<div class="row">' +
+            '<div class="col-md-6">' +
+            '<p><strong>Nom station:</strong> <%= terminal.getNom_station() %> </p>' +
+            '<p><strong>Nom opérateur:</strong> <%= terminal.getNom_operateur() %> </p>' +
+            '<p><strong>Contact opérateur:</strong> <%= terminal.getContact_operateur() %> </p>' +
+            '<p><strong>Téléphone opérateur:</strong> <%= terminal.getTelephone_operateur() %> </p>' +
+            '<p><strong>Adresse station:</strong> <%= (terminal.getAdresse_station().length() > 49) ? "Adresse trop longue" : terminal.getAdresse_station() %>> </p>' +
+            '<p><strong>Code INSEE Commune:</strong> <%= terminal.getCode_insee_commune() %> </p>' +
+            '<p><strong>Puissance nominale:</strong> <%= terminal.getpuissance_nominale() %> </p>' +
+            '<p><strong>Conditions d\'accès:</strong> <%= terminal.getCondition_acces() %> </p>' +
+            '</div>' +
+            '<div class="col-md-6">' +
+            '<p><strong>Tarification:</strong> <%= terminal.getTarification() %> </p>' +
+            '<p><strong>Horaires:</strong> <%= terminal.getHoraires() %> </p>' +
+            '<p><strong>Accessibilité PMR:</strong> <%= terminal.getAccessibilité_pmr() %> </p>' +
+            '<p><strong>Raccordement:</strong> <%= terminal.getraccordement() %> </p>' +
+            '<p><strong>Restriction gabarit:</strong> <%= terminal.getRestriction_gabarit() %> </p>' +
+            '<p><strong>Station deux roues:</strong> <%= terminal.isStation_deux_roues() %> </p>' +
+            '<p><strong>Date de mise en service:</strong> <%= terminal.getDate_mise_en_service() %> </p>' +
+            '<p><strong>Observations:</strong> <%= (terminal.getObservations().length() > 27) ? "Observations trop longues" : terminal.getObservations() %> </p>' +
+            '</div>' +
+            '</div>' +
+            '</div>'
         );
     <% } %>
 </script>
