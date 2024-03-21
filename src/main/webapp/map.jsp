@@ -6,14 +6,37 @@
 <%
     double latitude = 0;
     double longitude = 0;
-    if(request.getParameter("latitude") != null && request.getParameter("longitude") != null) {
+    boolean type2 = false;
+    boolean typeEF = false;
+    boolean typeChademo = false;
+    boolean comnoCss = false;
+    boolean typeAutre = false;
+    boolean accessiblitePMR = false;
+    boolean gratuit = false;
+    boolean reservable = false;
+    boolean CB = false;
+    boolean acte = false;
+    boolean autre = false;
+
+    if(request.getParameter("latitude") != null && request.getParameter("longitude") != null && request.getParameter("type2") != null && request.getParameter("typeEF") != null && request.getParameter("typeChademo") != null && request.getParameter("comnoCss") != null && request.getParameter("typeAutre") != null && request.getParameter("accessiblitePMR") != null && request.getParameter("gratuit") != null && request.getParameter("reservable") != null && request.getParameter("CB") != null && request.getParameter("acte") != null && request.getParameter("autre") != null) {
         latitude = Double.parseDouble(request.getParameter("latitude"));
         longitude = Double.parseDouble(request.getParameter("longitude"));
+        /*type2 = Boolean.parseBoolean(request.getParameter("type2"));
+        typeEF = Boolean.parseBoolean(request.getParameter("typeEF"));
+        typeChademo = Boolean.parseBoolean(request.getParameter("typeChademo"));
+        comnoCss = Boolean.parseBoolean(request.getParameter("comnoCss"));
+        typeAutre = Boolean.parseBoolean(request.getParameter("typeAutre"));
+        accessiblitePMR = Boolean.parseBoolean(request.getParameter("accessiblitePMR"));
+        gratuit = Boolean.parseBoolean(request.getParameter("gratuit"));
+        reservable = Boolean.parseBoolean(request.getParameter("reservable"));
+        CB = Boolean.parseBoolean(request.getParameter("CB"));
+        acte = Boolean.parseBoolean(request.getParameter("acte"));
+        autre = Boolean.parseBoolean(request.getParameter("autre"));*/
     }
     DBDAO dbdao = new DBDAO();
     List<Borne> terminals = null;
     try {
-        terminals = dbdao.getCloseElectricTerminals(latitude, longitude);
+        terminals = dbdao.getCloseElectricTerminals(latitude, longitude, type2, typeEF, typeChademo, comnoCss, typeAutre, accessiblitePMR, gratuit, reservable, CB, acte, autre);
     } catch (SQLException e) {
         throw new RuntimeException(e);
     }

@@ -44,14 +44,28 @@ public class DBDAO {
         Dotenv dotenv = Dotenv.load();
         List<Borne> bornes = new ArrayList<>();
         String tableName = dotenv.get("TABLE_NAME");
+
+        String sql = "SELECT *, " +
+                "6371 * 2 * ASIN(SQRT(POWER(SIN((? - ABS(consolidated_latitude)) * PI()/180 / 2), 2) + " +
+                "COS(? * PI()/180 ) * COS(ABS(consolidated_latitude) * PI()/180) * " +
+                "POWER(SIN((? - consolidated_longitude) * PI()/180 / 2), 2) )) AS distance " +
+                "FROM " + tableName + " WHERE 1 = 1 ";
+        if (type2)sql += "AND prise_type_2 = 1 ";
+        if (typeEF)sql += "AND prise_type_ef = 1 ";
+        if (typeChademo)sql += "AND prise_type_chademo = 1 ";
+        if (comnoCss)sql += "AND prise_type_combo_ccs = 1 ";
+        if (typeAutre)sql += "AND prise_type_autre = 1 ";
+        if (accessiblitePMR)sql += "AND accessibilite_pmr = 1 ";
+        if (gratuit)sql += "AND gratuit = 1 ";
+        if (reservable)sql += "AND reservation = 1 ";
+        if (CB)sql += "AND paiement_cb = 1 ";
+        if (acte)sql += "AND paiement_acte = 1 ";
+        if (autre)sql += "AND paiement_autre = 1 ";
+
+        sql += "ORDER BY distance LIMIT 15";
+
         try (
-                PreparedStatement pstmt = connection.prepareStatement(
-                "SELECT *, " +
-                        "6371 * 2 * ASIN(SQRT(POWER(SIN((? - ABS(consolidated_latitude)) * PI()/180 / 2), 2) + " +
-                        "COS(? * PI()/180 ) * COS(ABS(consolidated_latitude) * PI()/180) * " +
-                        "POWER(SIN((? - consolidated_longitude) * PI()/180 / 2), 2) )) AS distance " +
-                        "FROM " + tableName + " " +
-                        "ORDER BY distance LIMIT 15")) {
+                PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setDouble(1, userLatitude);
             pstmt.setDouble(2, userLatitude);
             pstmt.setDouble(3, userLongitude);

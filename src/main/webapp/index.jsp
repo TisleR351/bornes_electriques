@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="globals.css" />
+    <link rel="stylesheet" href="./globals.css" />
 </head>
 <body onload="loadCheckboxState()">
 <button class="btn btn-primary hide-filters" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">
@@ -117,7 +117,7 @@
     </div>
 
     <div class="d-grid gap-2">
-        <button class="btn btn-primary" type="button">Rechercher</button>
+        <button class="btn btn-primary" type="button" onclick="submitFilters()">Rechercher</button>
     </div>
 </div>
 </div>
@@ -169,13 +169,13 @@
         var autre = document.getElementById('autre').checked ? '1' : '0';
 
         var cookieValue = type2 + ';' + typeEF + ';' + typeChademo + ';' +comnoCss+ ';' + typeAutre + ';' +accessiblitePMR + ';' +gratuit + ';' + reservable + ';' + CB + ';' + acte + ';' + autre;
-            setCookie('filters', cookieValue, 7); // 假设已有的设置cookie的函数
+            setCookie('filters', cookieValue, 7);
     }
 
     function loadFiltersFromCookie() {
-        var filtersCookie = getCookie('filters'); // 假设已有的读取cookie的函数
+        var filtersCookie = getCookie('filters');
         if (filtersCookie) {
-            var values = filtersCookie.split(';'); // 使用同样的分隔符进行分割
+            var values = filtersCookie.split(';');
             document.getElementById('type2').checked = values[0] === '1';
             document.getElementById('typeEF').checked = values[1] === '1';
             document.getElementById('typeChademo').checked = values[2] === '1';
@@ -189,6 +189,40 @@
             document.getElementById('autre').checked = values[10] === '1';
         }
     }
+
+    function submitFilters() {
+        // 从页面元素直接读取当前的筛选状态
+        var type2 = document.getElementById('type2').checked;
+        var typeEF = document.getElementById('typeEF').checked;
+        var typeChademo = document.getElementById('typeChademo').checked;
+        var comnoCss = document.getElementById('comnoCss').checked;
+        var typeAutre = document.getElementById('typeAutre').checked;
+        var accessiblitePMR = document.getElementById('accessiblilitePmr').checked;
+        var gratuit = document.getElementById('gratuit').checked;
+        var reservable = document.getElementById('reservable').checked;
+        var CB = document.getElementById('CB').checked;
+        var acte = document.getElementById('acte').checked;
+        var autre = document.getElementById('autre').checked;
+
+        // 构建提交URL，包含当前的筛选状态
+        var url = "integrationMenu?";
+        url += "type2=" + type2;
+        url += "&typeEF=" + typeEF;
+        url += "&typeChademo=" + typeChademo;
+        url += "&comnoCss=" + comnoCss;
+        url += "&typeAutre=" + typeAutre;
+        url += "&accessiblitePMR=" + accessiblitePMR;
+        url += "&gratuit=" + gratuit;
+        url += "&reservable=" + reservable;
+        url += "&CB=" + CB;
+        url += "&acte=" + acte;
+        url += "&autre=" + autre;
+
+        // 重定向到构建的URL，以便后端可以处理这些筛选条件
+        window.location.href = url;
+    }
+
+
 
 
 </script>
