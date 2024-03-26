@@ -12,7 +12,7 @@ public class CookieServlet extends HttpServlet {
     }
     public void cookiesSettings(HttpServletRequest request, HttpServletResponse response) {
         setCookieIfNotNullAndNotEmpty("perimetre", request.getParameter("perimetre"), response);
-        setCookieIfNotNullAndNotEmpty("puissance", request.getParameter("puissance"), response);
+        setCookieIfNotNullAndNotEmpty("puissance_nominale", request.getParameter("puissance"), response);
         setCookieIfNotNullAndNotEmpty("prise_type_2", request.getParameter("prise_type_2"), response);
         setCookieIfNotNullAndNotEmpty("prise_type_ef", request.getParameter("prise_type_ef"), response);
         setCookieIfNotNullAndNotEmpty("prise_type_chademo", request.getParameter("prise_type_chademo"), response);

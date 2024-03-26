@@ -14,7 +14,7 @@ import jakarta.servlet.annotation.*;
 @WebServlet(name = "DAOServletServlet", value = "/DAOServlet")
 public class DAOServlet extends HttpServlet {
     private Connection connection;
-    private String perimetre;
+    private String perimetre = "10";
     private String puissance;
     private String prise_type_2;
     private String prise_type_ef;
@@ -66,7 +66,7 @@ public class DAOServlet extends HttpServlet {
                 case "perimetre":
                     perimetre = cookie.getValue();
                     break;
-                case "puissance":
+                case "puissance_nominale":
                     puissance = cookie.getValue();
                     break;
                 case "prise_type_2":
@@ -118,46 +118,68 @@ public class DAOServlet extends HttpServlet {
         String tableName = dotenv.get("TABLE_NAME");
         double latitude = Double.parseDouble(request.getParameter("latitude"));
         double longitude = Double.parseDouble(request.getParameter("longitude"));
-        String sql = "SELECT * FROM " + tableName + " WHERE 1=1";
+        String sql = "SELECT *, " +
+                "6371 * 2 * ASIN(SQRT(POWER(SIN((consolidated_latitude - ?) * PI() / 180 / 2), 2) + " +
+                "COS(consolidated_latitude * PI() / 180) * COS(? * PI() / 180) * " +
+                "POWER(SIN((consolidated_longitude - ?) * PI() / 180 / 2), 2))) AS distance " +
+                "FROM " + tableName + " WHERE 1=1";
+
+        if (Integer.parseInt(perimetre) > 0) {
+            sql += " AND 6371 * 2 * ASIN(SQRT(POWER(SIN((consolidated_latitude - ?) * PI() / 180 / 2), 2) + " +
+                    "COS(consolidated_latitude * PI() / 180) * COS(? * PI() / 180) * " +
+                    "POWER(SIN((consolidated_longitude - ?) * PI() / 180 / 2), 2))) <= ?";
+        }
         if (prise_type_2 != null && !prise_type_2.isEmpty()) {
-            sql += " OR prise_type_2 = ?";
+            sql += " AND prise_type_2 = ?";
         }
         if (prise_type_ef != null && !prise_type_ef.isEmpty()) {
-            sql += " OR prise_type_ef = ?";
+            sql += " AND prise_type_ef = ?";
         }
         if (prise_type_chademo != null && !prise_type_chademo.isEmpty()) {
-            sql += " OR prise_type_chademo = ?";
+            sql += " AND prise_type_chademo = ?";
         }
         if (prise_type_autre != null && !prise_type_autre.isEmpty()) {
-            sql += " OR prise_type_autre = ?";
+            sql += " AND prise_type_autre = ?";
         }
         if (prise_type_combo_ccs != null && !prise_type_combo_ccs.isEmpty()) {
-            sql += " OR prise_type_combo_ccs = ?";
+            sql += " AND prise_type_combo_ccs = ?";
         }
         if (accessibilite_pmr != null && !accessibilite_pmr.isEmpty()) {
-            sql += " OR accessibilite_pmr = ?";
+            sql += " AND accessibilite_pmr = ?";
         }
         if (reservation != null && !reservation.isEmpty()) {
-            sql += " OR reservation = ?";
+            sql += " AND reservation = ?";
         }
         if (gratuit != null && !gratuit.isEmpty()) {
-            sql += " OR gratuit = ?";
+            sql += " AND gratuit = ?";
         }
         if (paiement_cb != null && !paiement_cb.isEmpty()) {
-            sql += " OR paiement_cb = ?";
+            sql += " AND paiement_cb = ?";
         }
         if (paiement_acte != null && !paiement_acte.isEmpty()) {
-            sql += " OR paiement_acte = ?";
+            sql += " AND paiement_acte = ?";
         }
         if (paiement_autre != null && !paiement_autre.isEmpty()) {
-            sql += " OR paiement_autre = ?";
+            sql += " AND paiement_autre = ?";
         }
-        try (PreparedStatement pstmt = connection.prepareStatement(
-                sql + " ORDER BY SQRT(POWER(consolidated_latitude - ?, 2) + POWER(consolidated_longitude - ?, 2)) LIMIT 30")) {
-            int paramIndex = 0;
+        if (puissance != null && !puissance.isEmpty()) {
+            sql += " AND puissance_nominale > ?";
+        }
+        try (PreparedStatement pstmt = connection.prepareStatement(sql + " ORDER BY distance LIMIT 30")) {
+            pstmt.setDouble(1, latitude);
+            pstmt.setDouble(2, latitude);
+            pstmt.setDouble(3, longitude);
+            int paramIndex = 4;
             if (prise_type_2 != null && !prise_type_2.isEmpty()) {
                 paramIndex += 1;
                 pstmt.setBoolean(paramIndex, prise_type_2.equals("on"));
+            }
+            if (Integer.parseInt(perimetre) > 0) {
+                paramIndex += 4;
+                pstmt.setDouble(paramIndex-4, latitude);
+                pstmt.setDouble(paramIndex-3, latitude);
+                pstmt.setDouble(paramIndex-2, longitude);
+                pstmt.setDouble(paramIndex-1, Integer.parseInt(perimetre));
             }
             if (prise_type_ef != null && !prise_type_ef.isEmpty()) {
                 paramIndex += 1;
@@ -187,6 +209,10 @@ public class DAOServlet extends HttpServlet {
                 paramIndex += 1;
                 pstmt.setBoolean(paramIndex, gratuit.equals("on"));
             }
+            if (puissance != null && !puissance.isEmpty()) {
+                paramIndex += 1;
+                pstmt.setInt(paramIndex, Integer.parseInt(puissance));
+            }
             if (paiement_cb != null && !paiement_cb.isEmpty()) {
                 paramIndex += 1;
                 pstmt.setBoolean(paramIndex, paiement_cb.equals("on"));
@@ -199,8 +225,6 @@ public class DAOServlet extends HttpServlet {
                 paramIndex += 1;
                 pstmt.setBoolean(paramIndex, paiement_autre.equals("on"));
             }
-            pstmt.setDouble(paramIndex+1, latitude);
-            pstmt.setDouble(paramIndex+2, longitude);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {

@@ -10,7 +10,6 @@
     String accessibilite_pmr = null;
     String reservation = null;
     String gratuit = null;
-    String max_tarif = null;
     String paiement_cb = null;
     String paiement_autre = null;
     String paiement_acte = null;
@@ -47,9 +46,6 @@
             case "gratuit":
                 gratuit = cookie.getValue();
                 break;
-            case "max_tarif":
-                max_tarif = cookie.getValue();
-                break;
             case "paiement_cb":
                 paiement_cb = cookie.getValue();
                 break;
@@ -68,11 +64,11 @@
     <h5>Filtres</h5>
     <div class="mb-3">
         <label for="perimetre" class="form-label d-none">Perimetre</label>
-        <input type="text" class="form-control" name="perimetre" placeholder="Perimetre" id="perimetre" value="">
+        <input type="number" class="form-control" name="perimetre" placeholder="Perimetre" id="perimetre" value=<%= (perimetre != null && !perimetre.isEmpty()) ? perimetre : "" %>>
     </div>
     <div class="mb-3">
         <label for="puissance" class="form-label d-none">Puissance</label>
-        <input type="text" class="form-control" name="puissance" placeholder="Puissance" id="puissance" value="">
+        <input type="number" class="form-control" name="puissance" placeholder="Puissance" id="puissance" value=<%= (puissance != null && !puissance.isEmpty()) ? puissance : "" %>>
     </div>
     <div class="container mb-4 mt-4">
         <div class="row">
