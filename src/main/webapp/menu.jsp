@@ -19,7 +19,7 @@
             case "perimetre":
                 perimetre = cookie.getValue();
                 break;
-            case "puissance":
+            case "puissance_nominale":
                 puissance = cookie.getValue();
                 break;
             case "prise_type_2":

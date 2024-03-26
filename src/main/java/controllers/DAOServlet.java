@@ -163,23 +163,23 @@ public class DAOServlet extends HttpServlet {
             sql += " AND paiement_autre = ?";
         }
         if (puissance != null && !puissance.isEmpty()) {
-            sql += " AND puissance_nominale > ?";
+            sql += " AND puissance_nominale >= ?";
         }
         try (PreparedStatement pstmt = connection.prepareStatement(sql + " ORDER BY distance LIMIT 30")) {
             pstmt.setDouble(1, latitude);
             pstmt.setDouble(2, latitude);
             pstmt.setDouble(3, longitude);
-            int paramIndex = 4;
+            int paramIndex = 3;
             if (prise_type_2 != null && !prise_type_2.isEmpty()) {
                 paramIndex += 1;
                 pstmt.setBoolean(paramIndex, prise_type_2.equals("on"));
             }
             if (Integer.parseInt(perimetre) > 0) {
                 paramIndex += 4;
-                pstmt.setDouble(paramIndex-4, latitude);
                 pstmt.setDouble(paramIndex-3, latitude);
-                pstmt.setDouble(paramIndex-2, longitude);
-                pstmt.setDouble(paramIndex-1, Integer.parseInt(perimetre));
+                pstmt.setDouble(paramIndex-2, latitude);
+                pstmt.setDouble(paramIndex-1, longitude);
+                pstmt.setDouble(paramIndex, Integer.parseInt(perimetre));
             }
             if (prise_type_ef != null && !prise_type_ef.isEmpty()) {
                 paramIndex += 1;
