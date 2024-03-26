@@ -64,7 +64,7 @@
             }
     }
 %>
-<form action="./DAOServlet?<%= "latitude=" + request.getParameter("latitude") + "&longitude=" + request.getParameter("longitude") %>" method="post">
+<form action="./CookieServlet" method="post">
     <h5>Filtres</h5>
     <div class="mb-3">
         <label for="perimetre" class="form-label d-none">Perimetre</label>
@@ -117,10 +117,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="mb-3">
-        <label for="max_tarif" class="form-label d-none">Tarif max</label>
-        <input type="text" class="form-control" id="max_tarif" name="max_tarif" placeholder="Tarif Max" value="">
     </div>
     <h5>Paiement</h5>
     <div class="form-group m-4">

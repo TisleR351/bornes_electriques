@@ -1,4 +1,4 @@
-package dao;
+package controllers;
 
 import java.io.*;
 import java.sql.*;
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import classes.Borne;
+import modeles.Borne;
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -24,7 +24,6 @@ public class DAOServlet extends HttpServlet {
     private String accessibilite_pmr;
     private String reservation;
     private String gratuit;
-    private String max_tarif;
     private String paiement_cb;
     private String paiement_autre;
     private String paiement_acte;
@@ -93,8 +92,6 @@ public class DAOServlet extends HttpServlet {
                     break;
                 case "gratuit":
                     gratuit = cookie.getValue();
-                case "max_tarif":
-                    max_tarif = cookie.getValue();
                 case "paiement_cb":
                     paiement_cb = cookie.getValue();
                 case "paiement_autre":
@@ -108,36 +105,6 @@ public class DAOServlet extends HttpServlet {
         }
     }
 
-    public void cookiesSettings(HttpServletRequest request, HttpServletResponse response) {
-        setCookieIfNotNullAndNotEmpty("perimetre", request.getParameter("perimetre"), response);
-        setCookieIfNotNullAndNotEmpty("puissance", request.getParameter("puissance"), response);
-        setCookieIfNotNullAndNotEmpty("prise_type_2", request.getParameter("prise_type_2"), response);
-        setCookieIfNotNullAndNotEmpty("prise_type_ef", request.getParameter("prise_type_ef"), response);
-        setCookieIfNotNullAndNotEmpty("prise_type_chademo", request.getParameter("prise_type_chademo"), response);
-        setCookieIfNotNullAndNotEmpty("prise_type_autre", request.getParameter("prise_type_autre"), response);
-        setCookieIfNotNullAndNotEmpty("prise_type_combo_ccs", request.getParameter("prise_type_combo_ccs"), response);
-        setCookieIfNotNullAndNotEmpty("accessibilite_pmr", request.getParameter("accessibilite_pmr"), response);
-        setCookieIfNotNullAndNotEmpty("reservation", request.getParameter("reservation"), response);
-        setCookieIfNotNullAndNotEmpty("gratuit", request.getParameter("gratuit"), response);
-        setCookieIfNotNullAndNotEmpty("max_tarif", request.getParameter("max_tarif"), response);
-        setCookieIfNotNullAndNotEmpty("paiement_cb", request.getParameter("paiement_cb"), response);
-        setCookieIfNotNullAndNotEmpty("paiement_autre", request.getParameter("paiement_autre"), response);
-        setCookieIfNotNullAndNotEmpty("paiement_acte", request.getParameter("paiement_acte"), response);
-    }
-
-    private void setCookieIfNotNullAndNotEmpty(String cookieName, String cookieValue, HttpServletResponse response) {
-        if (cookieValue != null && !cookieValue.isEmpty()) {
-            Cookie cookie = new Cookie(cookieName, cookieValue);
-            cookie.setMaxAge(-1);
-            response.addCookie(cookie);
-        } else {
-            Cookie cookie = new Cookie(cookieName, "");
-            cookie.setMaxAge(-1);
-            response.addCookie(cookie);
-
-        }
-    }
-
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
@@ -145,6 +112,7 @@ public class DAOServlet extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        cookiesRecovery(request);
         Dotenv dotenv = Dotenv.load();
         List<Borne> bornes = new ArrayList<>();
         String tableName = dotenv.get("TABLE_NAME");
@@ -152,28 +120,37 @@ public class DAOServlet extends HttpServlet {
         double longitude = Double.parseDouble(request.getParameter("longitude"));
         String sql = "SELECT * FROM " + tableName + " WHERE 1=1";
         if (prise_type_2 != null && !prise_type_2.isEmpty()) {
-            sql += " AND prise_type_2 = ?";
+            sql += " OR prise_type_2 = ?";
         }
         if (prise_type_ef != null && !prise_type_ef.isEmpty()) {
-            sql += " AND prise_type_ef = ?";
+            sql += " OR prise_type_ef = ?";
         }
         if (prise_type_chademo != null && !prise_type_chademo.isEmpty()) {
-            sql += " AND prise_type_chademo = ?";
+            sql += " OR prise_type_chademo = ?";
         }
         if (prise_type_autre != null && !prise_type_autre.isEmpty()) {
-            sql += " AND prise_type_autre = ?";
+            sql += " OR prise_type_autre = ?";
         }
         if (prise_type_combo_ccs != null && !prise_type_combo_ccs.isEmpty()) {
-            sql += " AND prise_type_combo_ccs = ?";
+            sql += " OR prise_type_combo_ccs = ?";
         }
         if (accessibilite_pmr != null && !accessibilite_pmr.isEmpty()) {
-            sql += " AND accessibilite_pmr = ?";
+            sql += " OR accessibilite_pmr = ?";
         }
         if (reservation != null && !reservation.isEmpty()) {
-            sql += " AND reservation = ?";
+            sql += " OR reservation = ?";
         }
         if (gratuit != null && !gratuit.isEmpty()) {
-            sql += " AND gratuit = ?";
+            sql += " OR gratuit = ?";
+        }
+        if (paiement_cb != null && !paiement_cb.isEmpty()) {
+            sql += " OR paiement_cb = ?";
+        }
+        if (paiement_acte != null && !paiement_acte.isEmpty()) {
+            sql += " OR paiement_acte = ?";
+        }
+        if (paiement_autre != null && !paiement_autre.isEmpty()) {
+            sql += " OR paiement_autre = ?";
         }
         try (PreparedStatement pstmt = connection.prepareStatement(
                 sql + " ORDER BY SQRT(POWER(consolidated_latitude - ?, 2) + POWER(consolidated_longitude - ?, 2)) LIMIT 30")) {
@@ -210,10 +187,20 @@ public class DAOServlet extends HttpServlet {
                 paramIndex += 1;
                 pstmt.setBoolean(paramIndex, gratuit.equals("on"));
             }
+            if (paiement_cb != null && !paiement_cb.isEmpty()) {
+                paramIndex += 1;
+                pstmt.setBoolean(paramIndex, paiement_cb.equals("on"));
+            }
+            if (paiement_acte != null && !paiement_acte.isEmpty()) {
+                paramIndex += 1;
+                pstmt.setBoolean(paramIndex, paiement_acte.equals("on"));
+            }
+            if (paiement_autre != null && !paiement_autre.isEmpty()) {
+                paramIndex += 1;
+                pstmt.setBoolean(paramIndex, paiement_autre.equals("on"));
+            }
             pstmt.setDouble(paramIndex+1, latitude);
             pstmt.setDouble(paramIndex+2, longitude);
-
-            System.out.println(sql);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -266,12 +253,6 @@ public class DAOServlet extends HttpServlet {
         out.flush();
     }
 
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        cookiesSettings(request, response);
-        cookiesRecovery(request);
-        response.sendRedirect("./");
-    }
     public void destroy() {
     }
 }
