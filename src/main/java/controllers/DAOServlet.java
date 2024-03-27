@@ -15,7 +15,7 @@ import jakarta.servlet.annotation.*;
 public class DAOServlet extends HttpServlet {
     private Connection connection;
     private String perimetre = "10";
-    private String puissance;
+    private String puissance = "1";
     private String prise_type_2;
     private String prise_type_ef;
     private String prise_type_chademo;
@@ -64,10 +64,18 @@ public class DAOServlet extends HttpServlet {
         for(Cookie cookie : cookies) {
             switch(cookie.getName()) {
                 case "perimetre":
-                    perimetre = cookie.getValue();
+                    if(cookie.getValue() != null && !cookie.getValue().isEmpty()) {
+                        if (Integer.parseInt(cookie.getValue()) > 30) {
+                            perimetre = "30";
+                        } else {
+                            perimetre = cookie.getValue();
+                        }
+                    }
                     break;
                 case "puissance_nominale":
-                    puissance = cookie.getValue();
+                    if(cookie.getValue() != null && !cookie.getValue().isEmpty()) {
+                        puissance = cookie.getValue();
+                    }
                     break;
                 case "prise_type_2":
                     prise_type_2 = cookie.getValue();
@@ -125,9 +133,7 @@ public class DAOServlet extends HttpServlet {
                 "FROM " + tableName + " WHERE 1=1";
 
         if (Integer.parseInt(perimetre) > 0) {
-            sql += " AND 6371 * 2 * ASIN(SQRT(POWER(SIN((consolidated_latitude - ?) * PI() / 180 / 2), 2) + " +
-                    "COS(consolidated_latitude * PI() / 180) * COS(? * PI() / 180) * " +
-                    "POWER(SIN((consolidated_longitude - ?) * PI() / 180 / 2), 2))) <= ?";
+            sql += " AND 6371 * 2 * ASIN(SQRT(POWER(SIN((consolidated_latitude - ?) * PI() / 180 / 2), 2) + COS(consolidated_latitude * PI() / 180) * COS(? * PI() / 180) * POWER(SIN((consolidated_longitude - ?) * PI() / 180 / 2), 2))) <= ?";
         }
         if (prise_type_2 != null && !prise_type_2.isEmpty()) {
             sql += " AND prise_type_2 = ?";
@@ -165,15 +171,11 @@ public class DAOServlet extends HttpServlet {
         if (puissance != null && !puissance.isEmpty()) {
             sql += " AND puissance_nominale >= ?";
         }
-        try (PreparedStatement pstmt = connection.prepareStatement(sql + " ORDER BY distance LIMIT 30")) {
+        try (PreparedStatement pstmt = connection.prepareStatement(sql + " ORDER BY distance")) {
             pstmt.setDouble(1, latitude);
             pstmt.setDouble(2, latitude);
             pstmt.setDouble(3, longitude);
             int paramIndex = 3;
-            if (prise_type_2 != null && !prise_type_2.isEmpty()) {
-                paramIndex += 1;
-                pstmt.setBoolean(paramIndex, prise_type_2.equals("on"));
-            }
             if (Integer.parseInt(perimetre) > 0) {
                 paramIndex += 4;
                 pstmt.setDouble(paramIndex-3, latitude);
@@ -181,33 +183,37 @@ public class DAOServlet extends HttpServlet {
                 pstmt.setDouble(paramIndex-1, longitude);
                 pstmt.setDouble(paramIndex, Integer.parseInt(perimetre));
             }
+            if (prise_type_2 != null && !prise_type_2.isEmpty()) {
+                paramIndex += 1;
+                pstmt.setString(paramIndex, prise_type_2.equals("on") ? "true" : "false");
+            }
             if (prise_type_ef != null && !prise_type_ef.isEmpty()) {
                 paramIndex += 1;
-                pstmt.setBoolean(paramIndex, prise_type_ef.equals("on"));
+                pstmt.setString(paramIndex, prise_type_ef.equals("on") ? "true" : "false");
             }
             if (prise_type_chademo != null && !prise_type_chademo.isEmpty()) {
                 paramIndex += 1;
-                pstmt.setBoolean(paramIndex, prise_type_chademo.equals("on"));
+                pstmt.setString(paramIndex, prise_type_chademo.equals("on") ? "true" : "false");
             }
             if (prise_type_autre != null && !prise_type_autre.isEmpty()) {
                 paramIndex += 1;
-                pstmt.setBoolean(paramIndex, prise_type_autre.equals("on"));
+                pstmt.setString(paramIndex, prise_type_autre.equals("on") ? "true" : "false");
             }
             if (prise_type_combo_ccs != null && !prise_type_combo_ccs.isEmpty()) {
                 paramIndex += 1;
-                pstmt.setBoolean(paramIndex, prise_type_combo_ccs.equals("on"));
+                pstmt.setString(paramIndex, prise_type_combo_ccs.equals("on") ? "true" : "false");
             }
             if (accessibilite_pmr != null && !accessibilite_pmr.isEmpty()) {
                 paramIndex += 1;
-                pstmt.setBoolean(paramIndex, accessibilite_pmr.equals("on"));
+                pstmt.setString(paramIndex, accessibilite_pmr.equals("on") ? "true" : "false");
             }
             if (reservation != null && !reservation.isEmpty()) {
                 paramIndex += 1;
-                pstmt.setBoolean(paramIndex, reservation.equals("on"));
+                pstmt.setString(paramIndex, reservation.equals("on") ? "true" : "false");
             }
             if (gratuit != null && !gratuit.isEmpty()) {
                 paramIndex += 1;
-                pstmt.setBoolean(paramIndex, gratuit.equals("on"));
+                pstmt.setString(paramIndex, gratuit.equals("on") ? "true" : "false");
             }
             if (puissance != null && !puissance.isEmpty()) {
                 paramIndex += 1;
@@ -215,15 +221,15 @@ public class DAOServlet extends HttpServlet {
             }
             if (paiement_cb != null && !paiement_cb.isEmpty()) {
                 paramIndex += 1;
-                pstmt.setBoolean(paramIndex, paiement_cb.equals("on"));
+                pstmt.setString(paramIndex, paiement_cb.equals("on") ? "true" : "false");
             }
             if (paiement_acte != null && !paiement_acte.isEmpty()) {
                 paramIndex += 1;
-                pstmt.setBoolean(paramIndex, paiement_acte.equals("on"));
+                pstmt.setString(paramIndex, paiement_acte.equals("on") ? "true" : "false");
             }
             if (paiement_autre != null && !paiement_autre.isEmpty()) {
                 paramIndex += 1;
-                pstmt.setBoolean(paramIndex, paiement_autre.equals("on"));
+                pstmt.setString(paramIndex, paiement_autre.equals("on") ? "true" : "false");
             }
 
             try (ResultSet rs = pstmt.executeQuery()) {
