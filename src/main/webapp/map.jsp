@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<link rel="stylesheet" href="../styles/map.css" />
+<link rel="stylesheet" href="styles/map.css" />
 <%
     double latitude = 0;
     double longitude = 0;
