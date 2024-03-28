@@ -1,4 +1,4 @@
-package controllers;
+package controlers;
 
 import java.io.*;
 import java.sql.*;

@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<link rel="stylesheet" href="map.css" />
+<link rel="stylesheet" href="../styles/map.css" />
 <%
     double latitude = 0;
     double longitude = 0;
@@ -138,30 +138,25 @@
     }
 
     function calculerDistance(terminal) {
-        // Récupérer les paramètres de l'URL
         const urlParams = new URLSearchParams(window.location.search);
         const urlLatitude = parseFloat(urlParams.get('latitude'));
         const urlLongitude = parseFloat(urlParams.get('longitude'));
 
-        // Vérifier si les paramètres de l'URL sont valides
         if (isNaN(urlLatitude) || isNaN(urlLongitude)) {
             console.error('Les coordonnées de l\'URL ne sont pas valides.');
             return null;
         }
 
-        // Coordonnées du terminal
         const terminalLatitude = parseFloat(terminal.consolidated_latitude);
         const terminalLongitude = parseFloat(terminal.consolidated_longitude);
 
-        // Vérifier si les coordonnées du terminal sont valides
         if (isNaN(terminalLatitude) || isNaN(terminalLongitude)) {
             console.error('Les coordonnées du terminal ne sont pas valides.');
             return null;
         }
 
-        // Fonction de calcul de distance entre deux points en coordonnées géographiques
         function distance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Rayon de la Terre en kilomètres
+            const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a =
@@ -169,11 +164,10 @@
                 Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
                 Math.sin(dLon / 2) * Math.sin(dLon / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            const d = R * c; // Distance en kilomètres
+            const d = R * c;
             return d;
         }
 
-        // Calcul de la distance entre les deux points
         const distanceEnKilometres = distance(terminalLatitude, terminalLongitude, urlLatitude, urlLongitude);
         return distanceEnKilometres.toFixed(2);
     }
